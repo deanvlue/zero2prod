@@ -9,13 +9,15 @@ async fn health_check() -> HttpResponse {
     HttpResponse::Ok().finish()
 }
 
-// We need to mark run as public.
-// It is no longer a binary entrpoint, we can mark it as async
-// withouth having to  use any proc-macro incantation
-pub async fn run() -> Result<(), std::io::Error> {
+// The signature of the app changes
+// We return `Server` on the happy path and we dropped the async keyword
+// We have no await call so we ditch it
+pub fn run() -> Result<Server, std::io::Error> {
     println!("Server running at http://0.0.0.0:9090");
-    HttpServer::new(|| App::new().route("/health_check", web::get().to(health_check)))
+    let server = HttpServer::new(|| App::new().route("/health_check", web::get().to(health_check)))
         .bind("0.0.0.0:9090")?
-        .run()
-        .await
+        .run();
+
+    // NO wait here
+    Ok(server)
 }

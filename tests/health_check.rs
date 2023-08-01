@@ -6,10 +6,9 @@
 // `cargo expand --test healt_check` will help you to inspect the code
 
 #[tokio::test]
-
 async fn healt_check_works() {
     // Arrange
-    spawn_app().await.expect("Failed to spawn your app");
+    spawn_app();
 
     // Bring `reqwest` to perform HTTP requests against
     // our application
@@ -29,6 +28,10 @@ async fn healt_check_works() {
 }
 
 // Launch our application
-async fn spawn_app() -> Result<(), std::io::Error> {
-    zero2prod::run().await
+fn spawn_app() {
+    let server = zero2prod::run().expect("Failed to bind address");
+
+    // launch the server as a background task
+
+    let _ = tokio::spawn(server);
 }
