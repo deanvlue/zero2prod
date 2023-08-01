@@ -5,10 +5,12 @@
 
 // `cargo expand --test healt_check` will help you to inspect the code
 
+use std::{fmt::format, net::TcpListener};
+
 #[tokio::test]
 async fn healt_check_works() {
     // Arrange
-    spawn_app();
+    let address = spawn_app();
 
     // Bring `reqwest` to perform HTTP requests against
     // our application
@@ -17,7 +19,7 @@ async fn healt_check_works() {
 
     // Act
     let response = client
-        .get("http://127.0.0.1:9090/health_check")
+        .get(&format!("{}/health_check", address))
         .send()
         .await
         .expect("Failed to execute the request.");
@@ -28,15 +30,14 @@ async fn healt_check_works() {
 }
 
 // Launch our application
-fn spawn_app() {
-    // we will request for an available port
-    // we will use Port 0 for this at OS level
-    // This allows to bind to port 0 and in case of error
-    // OS will bind the app to the next available random port
+fn spawn_app() -> String {
+    let listener = TcpListener::bind("0.0.0.0:0").expect("Failed to bind to random port");
 
-    let server = zero2prod::run("0.0.0.0:0").expect("Failed to bind address");
-
+    // retrieve the port assinged to us by the OS
+    let port = listener.local_addr().unwrap().port();
+    let server = zero2prod::run(listener).expect("Failed to bind address");
     // launch the server as a background task
 
     let _ = tokio::spawn(server);
+    format!("http://0.0.0.0:{}", port)
 }
