@@ -29,7 +29,12 @@ async fn healt_check_works() {
 
 // Launch our application
 fn spawn_app() {
-    let server = zero2prod::run().expect("Failed to bind address");
+    // we will request for an available port
+    // we will use Port 0 for this at OS level
+    // This allows to bind to port 0 and in case of error
+    // OS will bind the app to the next available random port
+
+    let server = zero2prod::run("0.0.0.0:0").expect("Failed to bind address");
 
     // launch the server as a background task
 
