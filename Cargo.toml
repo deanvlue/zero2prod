@@ -2,7 +2,9 @@
 name = "zero2prod"
 version = "0.1.0"
 edition = "2021"
-authors = ["Luca Palmieri< <contact@palmieri.com>, Carlos Muñoz <munoz.josecarlos@gmail.com>"]
+authors = [
+  "Luca Palmieri< <contact@palmieri.com>, Carlos Muñoz <munoz.josecarlos@gmail.com>",
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -18,8 +20,7 @@ name = "zero2prod"
 
 [dependencies]
 actix-web = "4"
-tokio = { version = "1", features = ["macros","rt-multi-thread"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [dev-dependencies]
 reqwest = "0.11"
-
